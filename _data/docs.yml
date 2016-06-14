@@ -1,0 +1,19 @@
+- title: Introduction
+  docs:
+  - home
+  - quickstart
+  - tools
+  - installation
+  - usage
+  - examples
+
+- title: Miscellaneous
+  docs:
+  - troubleshooting
+  - resources
+
+- title: Meta
+  docs:
+  - contributing
+  - conduct
+  - history

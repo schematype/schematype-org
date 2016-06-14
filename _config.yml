@@ -1,0 +1,22 @@
+name: SchemaType • Defining the Data Web
+description: A Data Type Definition Language
+url: http://schematype.org
+
+repository: https://github.com/schematype/schematype-org
+help_url: https://github.com/schematype/schematype
+
+markdown: kramdown
+highlighter: pygments
+permalink: /news/:year/:month/:day/:title/
+excerpt_separator: ''
+
+timezone: America/Los_Angeles
+
+collections:
+  docs:
+    output: true
+
+gems:
+- jekyll-feed
+- jekyll-redirect-from
+- jemoji

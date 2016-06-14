@@ -1,0 +1,9 @@
+---
+layout: news_item
+title: No News...
+date: 2016-06-14 13:34:00 -0700
+author: ingydotnet
+categories: [bootstrapping]
+---
+
+...is good news!
