@@ -1,0 +1,720 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <title>News</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="generator" content="Jekyll v3.1.6">
+  <link type="application/atom+xml" rel="alternate" href="http://schematype.org/feed.xml" />
+  <link rel="alternate" type="application/atom+xml" title="Recent commits to SchemaType’s master branch" href="https://github.com/schematype/schematype-org/commits/master.atom">
+  <link rel="stylesheet" href="/css/screen.css">
+  <!--[if lt IE 9]>
+  <script src="/js/html5shiv.min.js"></script>
+  <script src="/js/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+
+<body class="wrap">
+  <header role="banner">
+  <nav class="mobile-nav show-on-mobiles">
+    <ul>
+  <li class="">
+    <a href="/">Home</a>
+  </li>
+  <li class="">
+    <a href="/docs/home/">Doc<span class="show-on-mobiles">s</span><span class="hide-on-mobiles">umentation</span></a>
+  </li>
+  <!--li class="">
+    <a href="/blog/">Blog</a>
+  </li-->
+  <li class="current">
+    <a href="/news/">News</a>
+  </li>
+  <li class="">
+    <a href="/help/">About</a>
+  </li>
+  <li class=" hide-on-mobiles">
+    <a href="/try/" target="_blank">Try It!</a>
+  </li>
+</ul>
+
+  </nav>
+  <div class="grid">
+    <div class="unit one-third center-on-mobiles">
+      <h1>
+          <a href="http://schematype.org">
+          <span class="sr-only">SchemaType</span>
+          <img src="/img/logo-2x.png" width="249" height="115" alt="SchemaType Logo">
+        </a>
+      </h1>
+    </div>
+    <nav class="main-nav unit two-thirds hide-on-mobiles">
+      <ul>
+  <li class="">
+    <a href="/">Home</a>
+  </li>
+  <li class="">
+    <a href="/docs/home/">Doc<span class="show-on-mobiles">s</span><span class="hide-on-mobiles">umentation</span></a>
+  </li>
+  <!--li class="">
+    <a href="/blog/">Blog</a>
+  </li-->
+  <li class="current">
+    <a href="/news/">News</a>
+  </li>
+  <li class="">
+    <a href="/help/">About</a>
+  </li>
+  <li class=" hide-on-mobiles">
+    <a href="/try/" target="_blank">Try It!</a>
+  </li>
+</ul>
+
+    </nav>
+  </div>
+</header>
+
+
+    <section class="news">
+    <div class="grid">
+
+      <div class="docs-nav-mobile unit whole show-on-mobiles">
+  <select onchange="if (this.value) window.location.href=this.value">
+    <option value="">Navigate the blog…</option>
+    <option value="/news/">Home</option>
+    <optgroup label="v1.x">
+      
+      <option value="/news/2016/07/08/why-dsl-matters/">Why DSL Matters</option>
+      
+      <option value="/news/2016/07/06/schematype-basic-language-design/">SchemaType Basic Language Design</option>
+      
+      <option value="/news/2016/07/05/schematype-can-you-define-that/">SchemaType! Can you define that for me?</option>
+      
+    </optgroup>
+  </select>
+</div>
+
+
+      <div class="unit four-fifths">
+        
+  
+    <article>
+  <h2>
+    <a href="/news/2016/07/08/why-dsl-matters/">
+      Why DSL Matters
+    </a>
+  </h2>
+  <span class="post-category">
+    <span class="label">
+      blog
+    </span>
+  </span>
+  <div class="post-meta">
+    <span class="post-date">
+      08 Jul 2016
+    </span>
+    <a href="https://github.com/ingydotnet" class="post-author">
+      <img src="https://github.com/ingydotnet.png" class="avatar" alt="ingydotnet avatar" width="24" height="24">
+      ingydotnet
+    </a>
+  </div>
+  <div class="post-content">
+    <p>In <a href="/news/2016/07/06/schematype-basic-language-design/">my last post</a> I gave
+you an introduction to the SchemaType language. It was meant to raise questions
+and I got a few. Mostly they were centered around using DSL shortcuts instead
+of using pure data. In this post I’ll tell more of the SchemaType language
+story.</p>
+
+<p>Let’s consider this <a href="http://json-schema.org/examples.html">JSON Schema flagship
+example</a>.</p>
+
+<pre><code>{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Example Schema",
+    "type": "object",
+    "properties": {
+        "firstName": {
+            "type": "string"
+        },
+        "lastName": {
+            "type": "string"
+        },
+        "age": {
+            "description": "Age in years",
+            "type": "integer",
+            "minimum": 0
+        }
+    },
+    "required": ["firstName", "lastName"]
+}
+</code></pre>
+
+<p>In SchemaType, this would look like:</p>
+
+<pre><code class="language-yaml">-spec: schematype.org/v0.0.1
+-from: github:schematype/type/#v0.1.2
+-desc: Example Schema
+firstName: +string
+lastName: +string
+age?: +int 0.. --Age in years
+</code></pre>
+
+<p>Two things come to mind. Either you love it because it is so tight, or you hate
+it because it is so tight! Well don’t worry, SchemaType has you covered.</p>
+
+<p>The DSL syntax used above is just syntactic sugar for the more explicit syntax:</p>
+
+<pre><code class="language-yaml">firstName:
+  -type: string
+lastName:
+  -type: string
+age:
+  -type: int
+  -min: 0
+  -desc: Age in years
+  -opt: true
+</code></pre>
+
+<p>You can also use a mix like this:</p>
+
+<pre><code class="language-yaml">firstName: +string
+lastName: +string
+age?:
+  -: +int 0..
+  -desc: Age in years
+</code></pre>
+
+<p>For the <code>age</code> field we use the DSL for the type and <code>min</code> constraint. These go
+under the special <code>-</code> key which indicates DSL is in the value. This is needed
+since the outer value is an object now, instead of a single YAML string value.
+Then we use the explicit <code>-desc</code> for the description field. You might find that
+this form looks best in your schema.</p>
+
+<p>Note that in the more explicit example above, there is still some DSL; namely
+the <code>-</code> in front of the SchemaType keywords. Of course we can work out other
+ways to turn that into data too, but then we approach looking like JSON Schema.</p>
+
+<p>The point is to make these documents, which can become massive in size,
+readable and maintainable. What happens when the schema you are defining has an
+object with keys like “type”, “description” and “required”? Well you have to
+figure out what level you are at to determine whether they are for your schema
+or for JSON Schema. With SchemaType, everything is instantly recognizable
+because of the DSL features.</p>
+
+<p>That’s the main point that I want to convey in this post. For SchemaType to
+become popular it not only needs to be extremely powerful, it needs to have a
+flexible syntax so that people actually like working with it. You might have
+noticed that even though SchemaType is a YAML based format, none of the YAML
+quoting styles are ever used. This is on purpose. YAML only requires quoting
+when the first character is a space or YAML syntax character, or when there is
+a <code>_#</code> or <code>:_</code> sequence in the string. The SchemaType DSL syntax is careful to
+avoid these so that you can use unquoted strings for everything.</p>
+
+<p>One nice thing about the SchemaType syntax is that you don’t need to decide up
+front which style to use. The <code>schematype</code> CLI can reformat your schema files
+for you:</p>
+
+<pre><code>$ schematype format --compact some.stp
+$ schematype format --explicit some.stp
+</code></pre>
+
+<p>In fact, SchemaType schemas get compiled before they are used. All the external
+references are pulled in and tied together into one big and very explicit data
+structure that is even more unreadable than JSON Schema. You never need to look
+at these files unless you are debugging something. When you publish a
+SchemaType schema, you are encouraged to publish the compiled form:</p>
+
+<pre><code>$ schematype compile --sign some.stp -o some.stx
+</code></pre>
+
+<p>This will create a digitally signed compiled schema file, that other schema
+types will use when they reference your hosted schema. <code>.stx</code> is the SchemaType
+extension for a compiled schema. It is actually stored as compact JSON.</p>
+
+<h4 id="stay-tuned">Stay Tuned</h4>
+
+<p>I’ve written a few blog posts this week to give you an idea of where SchemaType
+is headed as a language and as a software development framework. The next
+things I’ll be working on are:</p>
+
+<ul>
+  <li>SchemaType Language Documentation</li>
+  <li><code>schematype</code> CLI tool
+    <ul>
+      <li><code>compile</code> a SchemaType schema file to the canonical immutable form</li>
+      <li><code>import</code> a SchemaType file from an existing JSON Schema file</li>
+      <li><code>export</code> a SchemaType file to a JSON Schema file</li>
+      <li><code>validate</code> a data file against a schema file</li>
+      <li><code>generate</code> various software components. Examples:
+        <ul>
+          <li>Go lang data structs</li>
+          <li>HTML input form</li>
+          <li>SQL schema file</li>
+          <li>Protobuf message definition</li>
+          <li>Swagger v2 schema definitions</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Start the SchemaType v0.0.1 specification</li>
+</ul>
+
+<p><a href="/help/">Please join me</a> if you have ideas to contribute or just want to play
+along. Cheers!</p>
+
+<p>– Ingy döt Net</p>
+
+  </div>
+</article>
+
+  
+
+  
+    <article>
+  <h2>
+    <a href="/news/2016/07/06/schematype-basic-language-design/">
+      SchemaType Basic Language Design
+    </a>
+  </h2>
+  <span class="post-category">
+    <span class="label">
+      blog
+    </span>
+  </span>
+  <div class="post-meta">
+    <span class="post-date">
+      06 Jul 2016
+    </span>
+    <a href="https://github.com/ingydotnet" class="post-author">
+      <img src="https://github.com/ingydotnet.png" class="avatar" alt="ingydotnet avatar" width="24" height="24">
+      ingydotnet
+    </a>
+  </div>
+  <div class="post-content">
+    <p>In <a href="/news/2016/07/05/schematype-can-you-define-that/">yesterday’s post</a> I
+talked in broad terms about the scope, purpose and intention of SchemaType
+without actually showing what the language looks like.  In this post I’ll fix
+that!</p>
+
+<p>Assume you have this <code>person.yaml</code> file:</p>
+
+<pre><code class="language-yaml">name: Ingy döt Net
+age: 17
+dead: false
+</code></pre>
+
+<p>The simplest way to define a <code>person.stp</code> (<code>.stp</code> is the SchemaType file
+extension) file might look like this:</p>
+
+<pre><code class="language-yaml">name: string
+age: integer
+dead: boolean
+</code></pre>
+
+<p>This is the starting point of SchemaType. Let’s talk about what we have so far.
+First off the overall input format for SchemaType is YAML. Note that since JSON
+is a proper subset of YAML, you could also write SchemaType files in JSON.</p>
+
+<p>The definition of an object is simply a mapping of its keys to the <em>type</em> of
+its value. This is very simple (which is good), but it’s too simple to be a
+real language. Let’s move forward with a few additions:</p>
+
+<pre><code class="language-yaml">-name: /person
+-desc: Data about a person
+-spec: schematype.org/v0.0.1
+-from: github:schematype/type/#v0.1.6
+
+name: +human/name
+age: +int 1..100
+dead?: +boolean
+</code></pre>
+
+<p>This <em>is</em> a valid and complete SchemaType definition. You could publish this
+file for reuse at <code>http://yourdomain.net/person.stp</code>.</p>
+
+<p>The first thing you probably noticed are the unusual punctuation characters
+like <code>-</code>, <code>+</code>, <code>?</code> and <code>%</code>. SchemaType is a <em>YAML based <strong>DSL</strong></em>. The intention
+of the DSL is to keep the definitions concise. At the expense of learning just
+a few syntax concepts, you can keep simple things simple and massive things
+manageable.</p>
+
+<p>Keys that begin with a <code>-</code> belong to the SchemaType language. The first 4 keys
+will be present in almost every SchemaType definition.</p>
+
+<p>The <code>-name</code> field refers to the name of the type being defined in this file. It
+should match the base name of the file that it is stored in. A SchemaType file
+can define multiple types. In that case the name should be set to <code>/</code> and the
+file name should be <code>index.stp</code>. A condensed example of an <code>index.stp</code> file
+that defines the types <code>type1</code> and <code>type2</code> would look like:</p>
+
+<pre><code>-name: /
++type1: ...
++type2: ...
+</code></pre>
+
+<p>Interestingly the <code>...</code> is actually SchemaType syntax. It denotes a type
+reference of <code>+any</code>, ie any type. More about that in a future post.</p>
+
+<p>The <code>-desc</code> field is a short description of the purpose of this schema. The
+<code>-spec</code> field indicates the version of the SchemaType Language Specification
+being used.</p>
+
+<p>The most important keyword here is <code>from</code>. Within a SchemaType definition,
+types are referenced by names preceded with a <code>+</code>. In reality, each <code>+type1</code>
+reference expands to a full URL like
+<code>https://github.com/schematype/type/blob/f54b0aa/type1</code>. The <code>-from</code> is a set
+of type shorthands to their immutable definition URLs. Again, more about that
+in future posts.</p>
+
+<p>Back to the meat of our SchemaType example from above:</p>
+
+<pre><code class="language-yaml">name: +human/name
+age: +int 1..100
+dead?: +boolean
+</code></pre>
+
+<p>If you see a SchemaType definition that uses <code>+string</code> it should be a red flag
+that the schema author is DoingItWrong™. The <code>+human/name</code> type (defined by
+<code>schematype/type</code>) inherits from <code>+string</code> but it places much more strict
+constraints on valid values. For instance a URL or a GUID or the full text of
+the US Constitution are all valid strings but will not be valid names of
+people.</p>
+
+<p>SchemaType is very big on type <strong>inheritance</strong>. SchemaType only defines 5 types
+in its spec: <code>String</code>, <code>Number</code>, <code>Boolean</code>, <code>Null</code>, and <code>Any</code>, but none of
+these are ever referenced directly in schemas.</p>
+
+<p>Next consider the <code>age</code> field. This is actually creating a new temporary or
+anonymous type. It inherits from <code>+int</code> but then places a range constraint on
+it. Another way to do this would be:</p>
+
+<pre><code class="language-yaml">name: +human/name
+age: +age
+dead?: +boolean
+
++age: +int 1..100
+</code></pre>
+
+<p>The difference here is that we named the subtype. It is therefore available
+publicly as <code>person/age</code> in our schema publication.</p>
+
+<p>Last, but certainly not least is the <code>?</code> n <code>dead?</code>. It simply means that the
+<code>dead</code> key/value pair is optional. This implies the <code>name</code> and <code>age</code> are
+required. And that’s true. All keys in a definition are required by default.
+This stands in contrast to JSON Schema where all pairs are optional by default
+and unspecified keys are allowed. To allow any extra key/value pair in
+SchemaType you need to declare it like this:</p>
+
+<pre><code class="language-yaml">name: +human/name
+age: +int 1..100
+dead?: +boolean
+...: ...
+</code></pre>
+
+<p>There’s that <code>...</code> again. This means that any key is allowed to map to any
+value type.</p>
+
+<p>That wraps up the explanation of a very basic SchemaType document. For
+comparison, let’s look at the JSON Schema equivalent of our example:</p>
+
+<pre><code class="language-json">{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Person",
+    "type": "object",
+    "properties": {
+        "name": {
+            "$ref": "https://example.com/json.schema#human/name"
+        },
+        "age": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+        },
+        "dead": {
+            "type": "boolean"
+        }
+    },
+    "additionalProperties": false,
+    "required": [
+      "name",
+      "age"
+    ]
+}
+</code></pre>
+
+<p>This is a <em>rough</em> equivalent. This example is not so bad because you can see
+the whole thing on one page. In reality, JSON Schema gets unwieldy fast. A
+primary reason is that things like <code>required</code> are not made known in the place
+where the key is defined. I’ve seen many files where that information is 1000s
+of lines apart. The other thing is that it is hard to tell what parts are the
+JSON Schema language words and what parts are the data you are defining.
+SchemaType tries to make all this easy, compact and less painful.</p>
+
+<p>This post is an introduction to the language basics. It was intended to raise
+more questions than it answers. There is much more to cover, but hopefully
+that’s enough to start you thinking about SchemaType!</p>
+
+  </div>
+</article>
+
+  
+
+  
+    <article>
+  <h2>
+    <a href="/news/2016/07/05/schematype-can-you-define-that/">
+      SchemaType! Can you define that for me?
+    </a>
+  </h2>
+  <span class="post-category">
+    <span class="label">
+      blog
+    </span>
+  </span>
+  <div class="post-meta">
+    <span class="post-date">
+      05 Jul 2016
+    </span>
+    <a href="https://github.com/ingydotnet" class="post-author">
+      <img src="https://github.com/ingydotnet.png" class="avatar" alt="ingydotnet avatar" width="24" height="24">
+      ingydotnet
+    </a>
+  </div>
+  <div class="post-content">
+    <p>SchemaType is a new definition language for data. More specifically the data
+formats of the web that don’t already have definitions. Formats like YAML, JSON
+and CSV. Basically any format where the data is (or can be) represented as
+“objects”; ie mappings of known string keys to typed values. There’s more to
+the language of course, but defining objects is certainly a core principle.</p>
+
+<p>SchemaType, as the name implies, defines <strong>schemas</strong> and <strong>types</strong>. Effectively
+schemas and types are the same thing: named structural and semantic definitions
+of data points. The word “type” is usually applied to single values; things
+like “string”, “integer”, “boolean” and “date”. The term “schema”, on the other
+hand, is applied to data collection types; things like “address”, which might
+be composed of “street”, “city”, “state”, and “postal-code”. The SchemaType
+language is concerned with the definitions of both.</p>
+
+<h4 id="define-the-data-web-by-2018">Define the Data Web by 2018</h4>
+
+<p>The SchemaType project would like to define all open, undefined data in the
+next 2 years. This is a lofty goal, but the return on investment is grand, as
+I’ll try to show. Also, it turns out that schema can be substantially generated
+from valid data, so the data of the web could be crawled and a massive set of
+schemas could be started.</p>
+
+<p>How would this be useful though? Glad you asked. It is my belief that software
+development is moving away from people writing code, and having computers write
+(generate) code from data. Writing and maintaining the same kinds of code for
+every data source in many programming languages becomes infeasible. There are
+many types of code that can be written for you, and written better and faster
+and more continuously than any human possibly could. If you accept this logic,
+then the only programming left to do is writing the code that generates more
+code.</p>
+
+<p>I think we are a long ways off from replacing software development with code
+generation, but we can make inroads immediately. What’s missing? Well the
+biggest missing part is accurately defined data, ie <strong>Schema</strong>. Schema needs a
+language that can move beyond basic validation, and provide richer semantic
+info (I like to call them “hints”) on what code should be generated in various
+contexts. For instance, declaring that an object property is a “string” is
+fairly useless. Saying that it is a multi line, printable unicode text
+paragraph (which happens to inherit from string), can provide an input UI
+generator with the right hint to make a good UI.</p>
+
+<p>Here are a few of the kinds of code that generation I see Schema helping make
+possible:</p>
+
+<ul>
+  <li>Data validation (obviously)</li>
+  <li>End user input UI</li>
+  <li>Data visualization</li>
+  <li>Test data generation</li>
+  <li>Language specific “typedef” code</li>
+  <li>Translators between formats</li>
+  <li>RDBMS modeling and SQL generation</li>
+  <li>Protobuf definition generators</li>
+</ul>
+
+<p>I’ll talk more about each of these points in upcoming posts.</p>
+
+<h4 id="why-schematype">Why SchemaType?</h4>
+
+<p>As one of the creators of YAML, I have known for a decade that Schema is the
+next big effort. It seems that now, in the middle of 2016, all the stars have
+aligned, the mass has become critical and time is ripe for SchemaType.</p>
+
+<p>JSON Schema is the closest effort to compare SchemaType to. It has gained some
+acceptance in various places but seems to have stalled out in forward progress.
+Still it is a good starting point to research, as much time has been invested
+in it. I believe SchemaType will offer at least these advantages:</p>
+
+<ul>
+  <li>Simpler to author, read and maintain
+    <ul>
+      <li>JSON Schema gets too complex too quickly</li>
+      <li>SchemaType docs look closer to the data they are defining</li>
+    </ul>
+  </li>
+  <li>Easy to publish and share important schemas
+    <ul>
+      <li>Like GitHub, <em>forking</em> schemas is a good thing</li>
+    </ul>
+  </li>
+  <li>Leverage ready-made code generation tools
+    <ul>
+      <li>SchemaType will have an ever growing set of tools</li>
+    </ul>
+  </li>
+  <li>Provide type/schema definition immutability
+    <ul>
+      <li>Schemas import other schemas at specific commit points</li>
+    </ul>
+  </li>
+  <li>Provide digital signing to published open types
+    <ul>
+      <li>Know, verify and trust the sources of your import schemas</li>
+    </ul>
+  </li>
+  <li>Promote multiple authorities of trust
+    <ul>
+      <li>Anyone can define, host, fork the base schemas</li>
+    </ul>
+  </li>
+  <li>International
+    <ul>
+      <li>SchemaType will consider I18N issues from the get-go</li>
+    </ul>
+  </li>
+</ul>
+
+<p>To get things rolling with SchemaType, early implementations will be able to
+not only import JSON Schema to SchemaType but also to export SchemaType
+definitions back to JSON Schema. Therefore if you are already invested in JSON
+Schema, it will be easy to either make the switch, or simply use the more
+expressive and elegant SchemaType and then save it back to JSON Schema.</p>
+
+<h4 id="join-the-schema-revolution">Join The Schema Revolution</h4>
+
+<p>Strong type definitions for simple open data sources, combined with code
+generators for the common parts of software development is the future; and you
+can help bring it about sooner. SchemaType will be defined and implemented in
+the open. If you are interested please <a href="http://www.schematype.org/help/">join us</a>.</p>
+
+<p>Yours truly, Ingy döt Net.</p>
+
+  </div>
+</article>
+
+  
+
+
+      </div>
+
+      <div class="unit one-fifth hide-on-mobiles">
+  <aside>
+    <ul>
+      <li class="current">
+        <a href="/news/">All News</a>
+      </li>
+      <li class="">
+        <a href="/news/releases/">SchemaType Releases</a>
+      </li>
+    </ul>
+    <h4>Recent Releases</h4>
+    <ul>
+      
+      <li>
+        <a href="/docs/history/">History »</a>
+      </li>
+    </ul>
+    <h4>Other News</h4>
+    <ul>
+        
+        
+        <li class="">
+          <a href="/news/2016/07/08/why-dsl-matters/">Why DSL Matters</a>
+        </li>
+        
+        
+        
+        <li class="">
+          <a href="/news/2016/07/06/schematype-basic-language-design/">SchemaType Basic Language Design</a>
+        </li>
+        
+        
+        
+        <li class="">
+          <a href="/news/2016/07/05/schematype-can-you-define-that/">SchemaType! Can you define that for me?</a>
+        </li>
+        
+        
+    </ul>
+  </aside>
+</div>
+
+
+      <div class="clear"></div>
+
+    </div>
+  </section>
+
+
+  <footer role="contentinfo">
+  <div class="grid">
+    <div class="unit one-third center-on-mobiles">
+      <p>The contents of this website are <br />&copy;&nbsp;2016 under the terms of the <a href="https://github.com/schematype/schematype-org/blob/master/LICENSE">MIT&nbsp;License</a>.</p>
+    </div>
+    <div class="unit two-thirds align-right center-on-mobiles">
+      <p>
+        Hosted by <a href="https://pages.github.com">GitHub Pages</a>.
+      </p>
+      <br />
+      <p>
+        <a href="https://github.com/schematype/schematype-org">Fork this website</a>.
+      </p>
+    </div>
+  </div>
+</footer>
+
+  <script>
+  var anchorForId = function (id) {
+    var anchor = document.createElement("a");
+    anchor.className = "header-link";
+    anchor.href      = "#" + id;
+    anchor.innerHTML = "<span class=\"sr-only\">Permalink</span><i class=\"fa fa-link\"></i>";
+    anchor.title = "Permalink";
+    return anchor;
+  };
+
+  var linkifyAnchors = function (level, containingElement) {
+    var headers = containingElement.getElementsByTagName("h" + level);
+    for (var h = 0; h < headers.length; h++) {
+      var header = headers[h];
+
+      if (typeof header.id !== "undefined" && header.id !== "") {
+        header.appendChild(anchorForId(header.id));
+      }
+    }
+  };
+
+  document.onreadystatechange = function () {
+    if (this.readyState === "complete") {
+      var contentBlock = document.getElementsByClassName("docs")[0] || document.getElementsByClassName("news")[0];
+      if (!contentBlock) {
+        return;
+      }
+      for (var level = 1; level <= 6; level++) {
+        linkifyAnchors(level, contentBlock);
+      }
+    }
+  };
+</script>
+
+
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic,900">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+</body>
+</html>

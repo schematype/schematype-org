@@ -1,0 +1,37 @@
+{
+  "codegen": {
+    "servers": "http://generator.swagger.io/api/gen/servers",
+    "clients": "http://generator.swagger.io/api/gen/clients",
+    "server": "http://generator.swagger.io/api/gen/servers/{language}",
+    "client": "http://generator.swagger.io/api/gen/clients/{language}"
+  },
+  "analytics": {
+    "google": {
+      "id": "UA-51231036-1"
+    }
+  },
+  "disableCodeGen": false,
+  "examplesFolder": "spec-files/",
+  "editorOptions": {
+    "theme": "ace/theme/atom_dark"
+  },
+  "exampleFiles": [
+    "cloudfoundry-manifest.stp",
+    "geo-coordinate.stp",
+    "node-package.stp",
+    "sample.stp",
+    "sample.jsc"
+  ],
+  "autocompleteExtension": {},
+  "useBackendForStorage": false,
+  "backendThrottle": 200,
+  "keyPressDebounceTime": 200,
+  "backendEndpoint": "/editor/spec",
+  "useYamlBackend": false,
+  "disableFileMenu": false,
+  "headerBranding": false,
+  "disableNewUserIntro": true,
+  "enableTryIt": true,
+  "brandingCssClass": "",
+  "importProxyUrl": "https://cors-it.herokuapp.com/?url="
+}

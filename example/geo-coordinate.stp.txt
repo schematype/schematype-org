@@ -1,0 +1,8 @@
+# Schema for a geographic coordinate:
+-name: /geo-coordinate
+-spec: schematype.org/v0.0.1
+-desc: A geographical coordinate
+-from: github:schematype/type/#master
+
+latitude: +num/real -90..90
+longitude: +num/real -180..180

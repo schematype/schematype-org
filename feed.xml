@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+<generator uri="http://jekyllrb.com" version="3.1.6">Jekyll</generator>
+<link href="http://schematype.org/feed.xml" rel="self" type="application/atom+xml" />
+<link href="http://schematype.org/" rel="alternate" type="text/html" />
+<updated>2016-07-19T15:58:31-07:00</updated>
+<id>http://schematype.org/</id>
+<title>SchemaType • Defining the Data Web</title>
+<subtitle>A Data Type Definition Language</subtitle>
+<entry>
+<title>Why DSL Matters</title>
+<link href="http://schematype.org/news/2016/07/08/why-dsl-matters/" rel="alternate" type="text/html" title="Why DSL Matters" />
+<published>2016-07-08T09:00:00-07:00</published>
+<updated>2016-07-08T09:00:00-07:00</updated>
+<id>http://schematype.org/news/2016/07/08/why-dsl-matters</id>
+<content type="html" xml:base="http://schematype.org/news/2016/07/08/why-dsl-matters/">&lt;p&gt;In &lt;a href=&quot;/news/2016/07/06/schematype-basic-language-design/&quot;&gt;my last post&lt;/a&gt; I gave
+you an introduction to the SchemaType language. It was meant to raise questions
+and I got a few. Mostly they were centered around using DSL shortcuts instead
+of using pure data. In this post I’ll tell more of the SchemaType language
+story.&lt;/p&gt;
+
+&lt;p&gt;Let’s consider this &lt;a href=&quot;http://json-schema.org/examples.html&quot;&gt;JSON Schema flagship
+example&lt;/a&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{
+    &quot;$schema&quot;: &quot;http://json-schema.org/draft-04/schema#&quot;,
+    &quot;title&quot;: &quot;Example Schema&quot;,
+    &quot;type&quot;: &quot;object&quot;,
+    &quot;properties&quot;: {
+        &quot;firstName&quot;: {
+            &quot;type&quot;: &quot;string&quot;
+        },
+        &quot;lastName&quot;: {
+            &quot;type&quot;: &quot;string&quot;
+        },
+        &quot;age&quot;: {
+            &quot;description&quot;: &quot;Age in years&quot;,
+            &quot;type&quot;: &quot;integer&quot;,
+            &quot;minimum&quot;: 0
+        }
+    },
+    &quot;required&quot;: [&quot;firstName&quot;, &quot;lastName&quot;]
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In SchemaType, this would look like:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-yaml&quot;&gt;-spec: schematype.org/v0.0.1
+-from: github:schematype/type/#v0.1.2
+-desc: Example Schema
+firstName: +string
+lastName: +string
+age?: +int 0.. --Age in years
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Two things come to mind. Either you love it because it is so tight, or you hate
+it because it is so tight! Well don’t worry, SchemaType has you covered.&lt;/p&gt;
+
+&lt;p&gt;The DSL syntax used above is just syntactic sugar for the more explicit syntax:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-yaml&quot;&gt;firstName:
+  -type: string
+lastName:
+  -type: string
+age:
+  -type: int
+  -min: 0
+  -desc: Age in years
+  -opt: true
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You can also use a mix like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-yaml&quot;&gt;firstName: +string
+lastName: +string
+age?:
+  -: +int 0..
+  -desc: Age in years
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For the &lt;code&gt;age&lt;/code&gt; field we use the DSL for the type and &lt;code&gt;min&lt;/code&gt; constraint. These go
+under the special &lt;code&gt;-&lt;/code&gt; key which indicates DSL is in the value. This is needed
+since the outer value is an object now, instead of a single YAML string value.
+Then we use the explicit &lt;code&gt;-desc&lt;/code&gt; for the description field. You might find that
+this form looks best in your schema.&lt;/p&gt;
+
+&lt;p&gt;Note that in the more explicit example above, there is still some DSL; namely
+the &lt;code&gt;-&lt;/code&gt; in front of the SchemaType keywords. Of course we can work out other
+ways to turn that into data too, but then we approach looking like JSON Schema.&lt;/p&gt;
+
+&lt;p&gt;The point is to make these documents, which can become massive in size,
+readable and maintainable. What happens when the schema you are defining has an
+object with keys like “type”, “description” and “required”? Well you have to
+figure out what level you are at to determine whether they are for your schema
+or for JSON Schema. With SchemaType, everything is instantly recognizable
+because of the DSL features.&lt;/p&gt;
+
+&lt;p&gt;That’s the main point that I want to convey in this post. For SchemaType to
+become popular it not only needs to be extremely powerful, it needs to have a
+flexible syntax so that people actually like working with it. You might have
+noticed that even though SchemaType is a YAML based format, none of the YAML
+quoting styles are ever used. This is on purpose. YAML only requires quoting
+when the first character is a space or YAML syntax character, or when there is
+a &lt;code&gt;_#&lt;/code&gt; or &lt;code&gt;:_&lt;/code&gt; sequence in the string. The SchemaType DSL syntax is careful to
+avoid these so that you can use unquoted strings for everything.&lt;/p&gt;
+
+&lt;p&gt;One nice thing about the SchemaType syntax is that you don’t need to decide up
+front which style to use. The &lt;code&gt;schematype&lt;/code&gt; CLI can reformat your schema files
+for you:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ schematype format --compact some.stp
+$ schematype format --explicit some.stp
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In fact, SchemaType schemas get compiled before they are used. All the external
+references are pulled in and tied together into one big and very explicit data
+structure that is even more unreadable than JSON Schema. You never need to look
+at these files unless you are debugging something. When you publish a
+SchemaType schema, you are encouraged to publish the compiled form:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ schematype compile --sign some.stp -o some.stx
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This will create a digitally signed compiled schema file, that other schema
+types will use when they reference your hosted schema. &lt;code&gt;.stx&lt;/code&gt; is the SchemaType
+extension for a compiled schema. It is actually stored as compact JSON.&lt;/p&gt;
+
+&lt;h4 id=&quot;stay-tuned&quot;&gt;Stay Tuned&lt;/h4&gt;
+
+&lt;p&gt;I’ve written a few blog posts this week to give you an idea of where SchemaType
+is headed as a language and as a software development framework. The next
+things I’ll be working on are:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;SchemaType Language Documentation&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;schematype&lt;/code&gt; CLI tool
+    &lt;ul&gt;
+      &lt;li&gt;&lt;code&gt;compile&lt;/code&gt; a SchemaType schema file to the canonical immutable form&lt;/li&gt;
+      &lt;li&gt;&lt;code&gt;import&lt;/code&gt; a SchemaType file from an existing JSON Schema file&lt;/li&gt;
+      &lt;li&gt;&lt;code&gt;export&lt;/code&gt; a SchemaType file to a JSON Schema file&lt;/li&gt;
+      &lt;li&gt;&lt;code&gt;validate&lt;/code&gt; a data file against a schema file&lt;/li&gt;
+      &lt;li&gt;&lt;code&gt;generate&lt;/code&gt; various software components. Examples:
+        &lt;ul&gt;
+          &lt;li&gt;Go lang data structs&lt;/li&gt;
+          &lt;li&gt;HTML input form&lt;/li&gt;
+          &lt;li&gt;SQL schema file&lt;/li&gt;
+          &lt;li&gt;Protobuf message definition&lt;/li&gt;
+          &lt;li&gt;Swagger v2 schema definitions&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Start the SchemaType v0.0.1 specification&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;a href=&quot;/help/&quot;&gt;Please join me&lt;/a&gt; if you have ideas to contribute or just want to play
+along. Cheers!&lt;/p&gt;
+
+&lt;p&gt;– Ingy döt Net&lt;/p&gt;
+</content>
+<author>
+<name>ingydotnet</name>
+</author>
+<summary></summary>
+</entry>
+<entry>
+<title>SchemaType Basic Language Design</title>
+<link href="http://schematype.org/news/2016/07/06/schematype-basic-language-design/" rel="alternate" type="text/html" title="SchemaType Basic Language Design" />
+<published>2016-07-06T09:00:00-07:00</published>
+<updated>2016-07-06T09:00:00-07:00</updated>
+<id>http://schematype.org/news/2016/07/06/schematype-basic-language-design</id>
+<content type="html" xml:base="http://schematype.org/news/2016/07/06/schematype-basic-language-design/">&lt;p&gt;In &lt;a href=&quot;/news/2016/07/05/schematype-can-you-define-that/&quot;&gt;yesterday’s post&lt;/a&gt; I
+talked in broad terms about the scope, purpose and intention of SchemaType
+without actually showing what the language looks like.  In this post I’ll fix
+that!&lt;/p&gt;
+
+&lt;p&gt;Assume you have this &lt;code&gt;person.yaml&lt;/code&gt; file:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-yaml&quot;&gt;name: Ingy döt Net
+age: 17
+dead: false
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The simplest way to define a &lt;code&gt;person.stp&lt;/code&gt; (&lt;code&gt;.stp&lt;/code&gt; is the SchemaType file
+extension) file might look like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-yaml&quot;&gt;name: string
+age: integer
+dead: boolean
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is the starting point of SchemaType. Let’s talk about what we have so far.
+First off the overall input format for SchemaType is YAML. Note that since JSON
+is a proper subset of YAML, you could also write SchemaType files in JSON.&lt;/p&gt;
+
+&lt;p&gt;The definition of an object is simply a mapping of its keys to the &lt;em&gt;type&lt;/em&gt; of
+its value. This is very simple (which is good), but it’s too simple to be a
+real language. Let’s move forward with a few additions:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-yaml&quot;&gt;-name: /person
+-desc: Data about a person
+-spec: schematype.org/v0.0.1
+-from: github:schematype/type/#v0.1.6
+
+name: +human/name
+age: +int 1..100
+dead?: +boolean
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This &lt;em&gt;is&lt;/em&gt; a valid and complete SchemaType definition. You could publish this
+file for reuse at &lt;code&gt;http://yourdomain.net/person.stp&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;The first thing you probably noticed are the unusual punctuation characters
+like &lt;code&gt;-&lt;/code&gt;, &lt;code&gt;+&lt;/code&gt;, &lt;code&gt;?&lt;/code&gt; and &lt;code&gt;%&lt;/code&gt;. SchemaType is a &lt;em&gt;YAML based &lt;strong&gt;DSL&lt;/strong&gt;&lt;/em&gt;. The intention
+of the DSL is to keep the definitions concise. At the expense of learning just
+a few syntax concepts, you can keep simple things simple and massive things
+manageable.&lt;/p&gt;
+
+&lt;p&gt;Keys that begin with a &lt;code&gt;-&lt;/code&gt; belong to the SchemaType language. The first 4 keys
+will be present in almost every SchemaType definition.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;-name&lt;/code&gt; field refers to the name of the type being defined in this file. It
+should match the base name of the file that it is stored in. A SchemaType file
+can define multiple types. In that case the name should be set to &lt;code&gt;/&lt;/code&gt; and the
+file name should be &lt;code&gt;index.stp&lt;/code&gt;. A condensed example of an &lt;code&gt;index.stp&lt;/code&gt; file
+that defines the types &lt;code&gt;type1&lt;/code&gt; and &lt;code&gt;type2&lt;/code&gt; would look like:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;-name: /
++type1: ...
++type2: ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Interestingly the &lt;code&gt;...&lt;/code&gt; is actually SchemaType syntax. It denotes a type
+reference of &lt;code&gt;+any&lt;/code&gt;, ie any type. More about that in a future post.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;-desc&lt;/code&gt; field is a short description of the purpose of this schema. The
+&lt;code&gt;-spec&lt;/code&gt; field indicates the version of the SchemaType Language Specification
+being used.&lt;/p&gt;
+
+&lt;p&gt;The most important keyword here is &lt;code&gt;from&lt;/code&gt;. Within a SchemaType definition,
+types are referenced by names preceded with a &lt;code&gt;+&lt;/code&gt;. In reality, each &lt;code&gt;+type1&lt;/code&gt;
+reference expands to a full URL like
+&lt;code&gt;https://github.com/schematype/type/blob/f54b0aa/type1&lt;/code&gt;. The &lt;code&gt;-from&lt;/code&gt; is a set
+of type shorthands to their immutable definition URLs. Again, more about that
+in future posts.&lt;/p&gt;
+
+&lt;p&gt;Back to the meat of our SchemaType example from above:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-yaml&quot;&gt;name: +human/name
+age: +int 1..100
+dead?: +boolean
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If you see a SchemaType definition that uses &lt;code&gt;+string&lt;/code&gt; it should be a red flag
+that the schema author is DoingItWrong™. The &lt;code&gt;+human/name&lt;/code&gt; type (defined by
+&lt;code&gt;schematype/type&lt;/code&gt;) inherits from &lt;code&gt;+string&lt;/code&gt; but it places much more strict
+constraints on valid values. For instance a URL or a GUID or the full text of
+the US Constitution are all valid strings but will not be valid names of
+people.&lt;/p&gt;
+
+&lt;p&gt;SchemaType is very big on type &lt;strong&gt;inheritance&lt;/strong&gt;. SchemaType only defines 5 types
+in its spec: &lt;code&gt;String&lt;/code&gt;, &lt;code&gt;Number&lt;/code&gt;, &lt;code&gt;Boolean&lt;/code&gt;, &lt;code&gt;Null&lt;/code&gt;, and &lt;code&gt;Any&lt;/code&gt;, but none of
+these are ever referenced directly in schemas.&lt;/p&gt;
+
+&lt;p&gt;Next consider the &lt;code&gt;age&lt;/code&gt; field. This is actually creating a new temporary or
+anonymous type. It inherits from &lt;code&gt;+int&lt;/code&gt; but then places a range constraint on
+it. Another way to do this would be:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-yaml&quot;&gt;name: +human/name
+age: +age
+dead?: +boolean
+
++age: +int 1..100
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The difference here is that we named the subtype. It is therefore available
+publicly as &lt;code&gt;person/age&lt;/code&gt; in our schema publication.&lt;/p&gt;
+
+&lt;p&gt;Last, but certainly not least is the &lt;code&gt;?&lt;/code&gt; n &lt;code&gt;dead?&lt;/code&gt;. It simply means that the
+&lt;code&gt;dead&lt;/code&gt; key/value pair is optional. This implies the &lt;code&gt;name&lt;/code&gt; and &lt;code&gt;age&lt;/code&gt; are
+required. And that’s true. All keys in a definition are required by default.
+This stands in contrast to JSON Schema where all pairs are optional by default
+and unspecified keys are allowed. To allow any extra key/value pair in
+SchemaType you need to declare it like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-yaml&quot;&gt;name: +human/name
+age: +int 1..100
+dead?: +boolean
+...: ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;There’s that &lt;code&gt;...&lt;/code&gt; again. This means that any key is allowed to map to any
+value type.&lt;/p&gt;
+
+&lt;p&gt;That wraps up the explanation of a very basic SchemaType document. For
+comparison, let’s look at the JSON Schema equivalent of our example:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-json&quot;&gt;{
+    &quot;$schema&quot;: &quot;http://json-schema.org/draft-04/schema#&quot;,
+    &quot;title&quot;: &quot;Person&quot;,
+    &quot;type&quot;: &quot;object&quot;,
+    &quot;properties&quot;: {
+        &quot;name&quot;: {
+            &quot;$ref&quot;: &quot;https://example.com/json.schema#human/name&quot;
+        },
+        &quot;age&quot;: {
+            &quot;type&quot;: &quot;integer&quot;,
+            &quot;minimum&quot;: 1,
+            &quot;maximum&quot;: 100
+        },
+        &quot;dead&quot;: {
+            &quot;type&quot;: &quot;boolean&quot;
+        }
+    },
+    &quot;additionalProperties&quot;: false,
+    &quot;required&quot;: [
+      &quot;name&quot;,
+      &quot;age&quot;
+    ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is a &lt;em&gt;rough&lt;/em&gt; equivalent. This example is not so bad because you can see
+the whole thing on one page. In reality, JSON Schema gets unwieldy fast. A
+primary reason is that things like &lt;code&gt;required&lt;/code&gt; are not made known in the place
+where the key is defined. I’ve seen many files where that information is 1000s
+of lines apart. The other thing is that it is hard to tell what parts are the
+JSON Schema language words and what parts are the data you are defining.
+SchemaType tries to make all this easy, compact and less painful.&lt;/p&gt;
+
+&lt;p&gt;This post is an introduction to the language basics. It was intended to raise
+more questions than it answers. There is much more to cover, but hopefully
+that’s enough to start you thinking about SchemaType!&lt;/p&gt;
+</content>
+<author>
+<name>ingydotnet</name>
+</author>
+<summary></summary>
+</entry>
+<entry>
+<title>SchemaType! Can you define that for me?</title>
+<link href="http://schematype.org/news/2016/07/05/schematype-can-you-define-that/" rel="alternate" type="text/html" title="SchemaType! Can you define that for me?" />
+<published>2016-07-05T09:00:00-07:00</published>
+<updated>2016-07-05T09:00:00-07:00</updated>
+<id>http://schematype.org/news/2016/07/05/schematype-can-you-define-that</id>
+<content type="html" xml:base="http://schematype.org/news/2016/07/05/schematype-can-you-define-that/">&lt;p&gt;SchemaType is a new definition language for data. More specifically the data
+formats of the web that don’t already have definitions. Formats like YAML, JSON
+and CSV. Basically any format where the data is (or can be) represented as
+“objects”; ie mappings of known string keys to typed values. There’s more to
+the language of course, but defining objects is certainly a core principle.&lt;/p&gt;
+
+&lt;p&gt;SchemaType, as the name implies, defines &lt;strong&gt;schemas&lt;/strong&gt; and &lt;strong&gt;types&lt;/strong&gt;. Effectively
+schemas and types are the same thing: named structural and semantic definitions
+of data points. The word “type” is usually applied to single values; things
+like “string”, “integer”, “boolean” and “date”. The term “schema”, on the other
+hand, is applied to data collection types; things like “address”, which might
+be composed of “street”, “city”, “state”, and “postal-code”. The SchemaType
+language is concerned with the definitions of both.&lt;/p&gt;
+
+&lt;h4 id=&quot;define-the-data-web-by-2018&quot;&gt;Define the Data Web by 2018&lt;/h4&gt;
+
+&lt;p&gt;The SchemaType project would like to define all open, undefined data in the
+next 2 years. This is a lofty goal, but the return on investment is grand, as
+I’ll try to show. Also, it turns out that schema can be substantially generated
+from valid data, so the data of the web could be crawled and a massive set of
+schemas could be started.&lt;/p&gt;
+
+&lt;p&gt;How would this be useful though? Glad you asked. It is my belief that software
+development is moving away from people writing code, and having computers write
+(generate) code from data. Writing and maintaining the same kinds of code for
+every data source in many programming languages becomes infeasible. There are
+many types of code that can be written for you, and written better and faster
+and more continuously than any human possibly could. If you accept this logic,
+then the only programming left to do is writing the code that generates more
+code.&lt;/p&gt;
+
+&lt;p&gt;I think we are a long ways off from replacing software development with code
+generation, but we can make inroads immediately. What’s missing? Well the
+biggest missing part is accurately defined data, ie &lt;strong&gt;Schema&lt;/strong&gt;. Schema needs a
+language that can move beyond basic validation, and provide richer semantic
+info (I like to call them “hints”) on what code should be generated in various
+contexts. For instance, declaring that an object property is a “string” is
+fairly useless. Saying that it is a multi line, printable unicode text
+paragraph (which happens to inherit from string), can provide an input UI
+generator with the right hint to make a good UI.&lt;/p&gt;
+
+&lt;p&gt;Here are a few of the kinds of code that generation I see Schema helping make
+possible:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Data validation (obviously)&lt;/li&gt;
+  &lt;li&gt;End user input UI&lt;/li&gt;
+  &lt;li&gt;Data visualization&lt;/li&gt;
+  &lt;li&gt;Test data generation&lt;/li&gt;
+  &lt;li&gt;Language specific “typedef” code&lt;/li&gt;
+  &lt;li&gt;Translators between formats&lt;/li&gt;
+  &lt;li&gt;RDBMS modeling and SQL generation&lt;/li&gt;
+  &lt;li&gt;Protobuf definition generators&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I’ll talk more about each of these points in upcoming posts.&lt;/p&gt;
+
+&lt;h4 id=&quot;why-schematype&quot;&gt;Why SchemaType?&lt;/h4&gt;
+
+&lt;p&gt;As one of the creators of YAML, I have known for a decade that Schema is the
+next big effort. It seems that now, in the middle of 2016, all the stars have
+aligned, the mass has become critical and time is ripe for SchemaType.&lt;/p&gt;
+
+&lt;p&gt;JSON Schema is the closest effort to compare SchemaType to. It has gained some
+acceptance in various places but seems to have stalled out in forward progress.
+Still it is a good starting point to research, as much time has been invested
+in it. I believe SchemaType will offer at least these advantages:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Simpler to author, read and maintain
+    &lt;ul&gt;
+      &lt;li&gt;JSON Schema gets too complex too quickly&lt;/li&gt;
+      &lt;li&gt;SchemaType docs look closer to the data they are defining&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Easy to publish and share important schemas
+    &lt;ul&gt;
+      &lt;li&gt;Like GitHub, &lt;em&gt;forking&lt;/em&gt; schemas is a good thing&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Leverage ready-made code generation tools
+    &lt;ul&gt;
+      &lt;li&gt;SchemaType will have an ever growing set of tools&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Provide type/schema definition immutability
+    &lt;ul&gt;
+      &lt;li&gt;Schemas import other schemas at specific commit points&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Provide digital signing to published open types
+    &lt;ul&gt;
+      &lt;li&gt;Know, verify and trust the sources of your import schemas&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Promote multiple authorities of trust
+    &lt;ul&gt;
+      &lt;li&gt;Anyone can define, host, fork the base schemas&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;International
+    &lt;ul&gt;
+      &lt;li&gt;SchemaType will consider I18N issues from the get-go&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;To get things rolling with SchemaType, early implementations will be able to
+not only import JSON Schema to SchemaType but also to export SchemaType
+definitions back to JSON Schema. Therefore if you are already invested in JSON
+Schema, it will be easy to either make the switch, or simply use the more
+expressive and elegant SchemaType and then save it back to JSON Schema.&lt;/p&gt;
+
+&lt;h4 id=&quot;join-the-schema-revolution&quot;&gt;Join The Schema Revolution&lt;/h4&gt;
+
+&lt;p&gt;Strong type definitions for simple open data sources, combined with code
+generators for the common parts of software development is the future; and you
+can help bring it about sooner. SchemaType will be defined and implemented in
+the open. If you are interested please &lt;a href=&quot;http://www.schematype.org/help/&quot;&gt;join us&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Yours truly, Ingy döt Net.&lt;/p&gt;
+</content>
+<author>
+<name>ingydotnet</name>
+</author>
+<summary></summary>
+</entry>
+</feed>

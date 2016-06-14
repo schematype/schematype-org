@@ -1,0 +1,393 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <title>SchemaType Basic Language Design</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="generator" content="Jekyll v3.1.6">
+  <link type="application/atom+xml" rel="alternate" href="http://schematype.org/feed.xml" />
+  <link rel="alternate" type="application/atom+xml" title="Recent commits to SchemaType’s master branch" href="https://github.com/schematype/schematype-org/commits/master.atom">
+  <link rel="stylesheet" href="/css/screen.css">
+  <!--[if lt IE 9]>
+  <script src="/js/html5shiv.min.js"></script>
+  <script src="/js/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+
+<body class="wrap">
+  <header role="banner">
+  <nav class="mobile-nav show-on-mobiles">
+    <ul>
+  <li class="">
+    <a href="/">Home</a>
+  </li>
+  <li class="">
+    <a href="/docs/home/">Doc<span class="show-on-mobiles">s</span><span class="hide-on-mobiles">umentation</span></a>
+  </li>
+  <!--li class="">
+    <a href="/blog/">Blog</a>
+  </li-->
+  <li class="current">
+    <a href="/news/">News</a>
+  </li>
+  <li class="">
+    <a href="/help/">About</a>
+  </li>
+  <li class=" hide-on-mobiles">
+    <a href="/try/" target="_blank">Try It!</a>
+  </li>
+</ul>
+
+  </nav>
+  <div class="grid">
+    <div class="unit one-third center-on-mobiles">
+      <h1>
+          <a href="http://schematype.org">
+          <span class="sr-only">SchemaType</span>
+          <img src="/img/logo-2x.png" width="249" height="115" alt="SchemaType Logo">
+        </a>
+      </h1>
+    </div>
+    <nav class="main-nav unit two-thirds hide-on-mobiles">
+      <ul>
+  <li class="">
+    <a href="/">Home</a>
+  </li>
+  <li class="">
+    <a href="/docs/home/">Doc<span class="show-on-mobiles">s</span><span class="hide-on-mobiles">umentation</span></a>
+  </li>
+  <!--li class="">
+    <a href="/blog/">Blog</a>
+  </li-->
+  <li class="current">
+    <a href="/news/">News</a>
+  </li>
+  <li class="">
+    <a href="/help/">About</a>
+  </li>
+  <li class=" hide-on-mobiles">
+    <a href="/try/" target="_blank">Try It!</a>
+  </li>
+</ul>
+
+    </nav>
+  </div>
+</header>
+
+
+    <section class="news">
+    <div class="grid">
+
+      <div class="docs-nav-mobile unit whole show-on-mobiles">
+  <select onchange="if (this.value) window.location.href=this.value">
+    <option value="">Navigate the blog…</option>
+    <option value="/news/">Home</option>
+    <optgroup label="v1.x">
+      
+      <option value="/news/2016/07/08/why-dsl-matters/">Why DSL Matters</option>
+      
+      <option value="/news/2016/07/06/schematype-basic-language-design/">SchemaType Basic Language Design</option>
+      
+      <option value="/news/2016/07/05/schematype-can-you-define-that/">SchemaType! Can you define that for me?</option>
+      
+    </optgroup>
+  </select>
+</div>
+
+
+      <div class="unit four-fifths">
+        <article>
+  <h2>
+    SchemaType Basic Language Design
+    <a href="/news/2016/07/06/schematype-basic-language-design/" class="permalink" title="Permalink">∞</a>
+  </h2>
+  <span class="post-category">
+    <span class="label">
+      blog
+    </span>
+  </span>
+  <div class="post-meta">
+    <span class="post-date">
+      06 Jul 2016
+    </span>
+    <a href="https://github.com/ingydotnet" class="post-author">
+      <img src="https://github.com/ingydotnet.png" class="avatar" alt="ingydotnet avatar" width="24" height="24">
+      ingydotnet
+    </a>
+  </div>
+  <div class="post-content">
+    <p>In <a href="/news/2016/07/05/schematype-can-you-define-that/">yesterday’s post</a> I
+talked in broad terms about the scope, purpose and intention of SchemaType
+without actually showing what the language looks like.  In this post I’ll fix
+that!</p>
+
+<p>Assume you have this <code>person.yaml</code> file:</p>
+
+<pre><code class="language-yaml">name: Ingy döt Net
+age: 17
+dead: false
+</code></pre>
+
+<p>The simplest way to define a <code>person.stp</code> (<code>.stp</code> is the SchemaType file
+extension) file might look like this:</p>
+
+<pre><code class="language-yaml">name: string
+age: integer
+dead: boolean
+</code></pre>
+
+<p>This is the starting point of SchemaType. Let’s talk about what we have so far.
+First off the overall input format for SchemaType is YAML. Note that since JSON
+is a proper subset of YAML, you could also write SchemaType files in JSON.</p>
+
+<p>The definition of an object is simply a mapping of its keys to the <em>type</em> of
+its value. This is very simple (which is good), but it’s too simple to be a
+real language. Let’s move forward with a few additions:</p>
+
+<pre><code class="language-yaml">-name: /person
+-desc: Data about a person
+-spec: schematype.org/v0.0.1
+-from: github:schematype/type/#v0.1.6
+
+name: +human/name
+age: +int 1..100
+dead?: +boolean
+</code></pre>
+
+<p>This <em>is</em> a valid and complete SchemaType definition. You could publish this
+file for reuse at <code>http://yourdomain.net/person.stp</code>.</p>
+
+<p>The first thing you probably noticed are the unusual punctuation characters
+like <code>-</code>, <code>+</code>, <code>?</code> and <code>%</code>. SchemaType is a <em>YAML based <strong>DSL</strong></em>. The intention
+of the DSL is to keep the definitions concise. At the expense of learning just
+a few syntax concepts, you can keep simple things simple and massive things
+manageable.</p>
+
+<p>Keys that begin with a <code>-</code> belong to the SchemaType language. The first 4 keys
+will be present in almost every SchemaType definition.</p>
+
+<p>The <code>-name</code> field refers to the name of the type being defined in this file. It
+should match the base name of the file that it is stored in. A SchemaType file
+can define multiple types. In that case the name should be set to <code>/</code> and the
+file name should be <code>index.stp</code>. A condensed example of an <code>index.stp</code> file
+that defines the types <code>type1</code> and <code>type2</code> would look like:</p>
+
+<pre><code>-name: /
++type1: ...
++type2: ...
+</code></pre>
+
+<p>Interestingly the <code>...</code> is actually SchemaType syntax. It denotes a type
+reference of <code>+any</code>, ie any type. More about that in a future post.</p>
+
+<p>The <code>-desc</code> field is a short description of the purpose of this schema. The
+<code>-spec</code> field indicates the version of the SchemaType Language Specification
+being used.</p>
+
+<p>The most important keyword here is <code>from</code>. Within a SchemaType definition,
+types are referenced by names preceded with a <code>+</code>. In reality, each <code>+type1</code>
+reference expands to a full URL like
+<code>https://github.com/schematype/type/blob/f54b0aa/type1</code>. The <code>-from</code> is a set
+of type shorthands to their immutable definition URLs. Again, more about that
+in future posts.</p>
+
+<p>Back to the meat of our SchemaType example from above:</p>
+
+<pre><code class="language-yaml">name: +human/name
+age: +int 1..100
+dead?: +boolean
+</code></pre>
+
+<p>If you see a SchemaType definition that uses <code>+string</code> it should be a red flag
+that the schema author is DoingItWrong™. The <code>+human/name</code> type (defined by
+<code>schematype/type</code>) inherits from <code>+string</code> but it places much more strict
+constraints on valid values. For instance a URL or a GUID or the full text of
+the US Constitution are all valid strings but will not be valid names of
+people.</p>
+
+<p>SchemaType is very big on type <strong>inheritance</strong>. SchemaType only defines 5 types
+in its spec: <code>String</code>, <code>Number</code>, <code>Boolean</code>, <code>Null</code>, and <code>Any</code>, but none of
+these are ever referenced directly in schemas.</p>
+
+<p>Next consider the <code>age</code> field. This is actually creating a new temporary or
+anonymous type. It inherits from <code>+int</code> but then places a range constraint on
+it. Another way to do this would be:</p>
+
+<pre><code class="language-yaml">name: +human/name
+age: +age
+dead?: +boolean
+
++age: +int 1..100
+</code></pre>
+
+<p>The difference here is that we named the subtype. It is therefore available
+publicly as <code>person/age</code> in our schema publication.</p>
+
+<p>Last, but certainly not least is the <code>?</code> n <code>dead?</code>. It simply means that the
+<code>dead</code> key/value pair is optional. This implies the <code>name</code> and <code>age</code> are
+required. And that’s true. All keys in a definition are required by default.
+This stands in contrast to JSON Schema where all pairs are optional by default
+and unspecified keys are allowed. To allow any extra key/value pair in
+SchemaType you need to declare it like this:</p>
+
+<pre><code class="language-yaml">name: +human/name
+age: +int 1..100
+dead?: +boolean
+...: ...
+</code></pre>
+
+<p>There’s that <code>...</code> again. This means that any key is allowed to map to any
+value type.</p>
+
+<p>That wraps up the explanation of a very basic SchemaType document. For
+comparison, let’s look at the JSON Schema equivalent of our example:</p>
+
+<pre><code class="language-json">{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Person",
+    "type": "object",
+    "properties": {
+        "name": {
+            "$ref": "https://example.com/json.schema#human/name"
+        },
+        "age": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+        },
+        "dead": {
+            "type": "boolean"
+        }
+    },
+    "additionalProperties": false,
+    "required": [
+      "name",
+      "age"
+    ]
+}
+</code></pre>
+
+<p>This is a <em>rough</em> equivalent. This example is not so bad because you can see
+the whole thing on one page. In reality, JSON Schema gets unwieldy fast. A
+primary reason is that things like <code>required</code> are not made known in the place
+where the key is defined. I’ve seen many files where that information is 1000s
+of lines apart. The other thing is that it is hard to tell what parts are the
+JSON Schema language words and what parts are the data you are defining.
+SchemaType tries to make all this easy, compact and less painful.</p>
+
+<p>This post is an introduction to the language basics. It was intended to raise
+more questions than it answers. There is much more to cover, but hopefully
+that’s enough to start you thinking about SchemaType!</p>
+
+  </div>
+</article>
+
+      </div>
+
+      <div class="unit one-fifth hide-on-mobiles">
+  <aside>
+    <ul>
+      <li class="">
+        <a href="/news/">All News</a>
+      </li>
+      <li class="">
+        <a href="/news/releases/">SchemaType Releases</a>
+      </li>
+    </ul>
+    <h4>Recent Releases</h4>
+    <ul>
+      
+      <li>
+        <a href="/docs/history/">History »</a>
+      </li>
+    </ul>
+    <h4>Other News</h4>
+    <ul>
+        
+        
+        <li class="">
+          <a href="/news/2016/07/08/why-dsl-matters/">Why DSL Matters</a>
+        </li>
+        
+        
+        
+        <li class="current">
+          <a href="/news/2016/07/06/schematype-basic-language-design/">SchemaType Basic Language Design</a>
+        </li>
+        
+        
+        
+        <li class="">
+          <a href="/news/2016/07/05/schematype-can-you-define-that/">SchemaType! Can you define that for me?</a>
+        </li>
+        
+        
+    </ul>
+  </aside>
+</div>
+
+
+      <div class="clear"></div>
+
+    </div>
+  </section>
+
+
+  <footer role="contentinfo">
+  <div class="grid">
+    <div class="unit one-third center-on-mobiles">
+      <p>The contents of this website are <br />&copy;&nbsp;2016 under the terms of the <a href="https://github.com/schematype/schematype-org/blob/master/LICENSE">MIT&nbsp;License</a>.</p>
+    </div>
+    <div class="unit two-thirds align-right center-on-mobiles">
+      <p>
+        Hosted by <a href="https://pages.github.com">GitHub Pages</a>.
+      </p>
+      <br />
+      <p>
+        <a href="https://github.com/schematype/schematype-org">Fork this website</a>.
+      </p>
+    </div>
+  </div>
+</footer>
+
+  <script>
+  var anchorForId = function (id) {
+    var anchor = document.createElement("a");
+    anchor.className = "header-link";
+    anchor.href      = "#" + id;
+    anchor.innerHTML = "<span class=\"sr-only\">Permalink</span><i class=\"fa fa-link\"></i>";
+    anchor.title = "Permalink";
+    return anchor;
+  };
+
+  var linkifyAnchors = function (level, containingElement) {
+    var headers = containingElement.getElementsByTagName("h" + level);
+    for (var h = 0; h < headers.length; h++) {
+      var header = headers[h];
+
+      if (typeof header.id !== "undefined" && header.id !== "") {
+        header.appendChild(anchorForId(header.id));
+      }
+    }
+  };
+
+  document.onreadystatechange = function () {
+    if (this.readyState === "complete") {
+      var contentBlock = document.getElementsByClassName("docs")[0] || document.getElementsByClassName("news")[0];
+      if (!contentBlock) {
+        return;
+      }
+      for (var level = 1; level <= 6; level++) {
+        linkifyAnchors(level, contentBlock);
+      }
+    }
+  };
+</script>
+
+
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic,900">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+</body>
+</html>
