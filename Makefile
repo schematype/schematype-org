@@ -1,13 +1,24 @@
-build:
+JEKYLL_LOCAL_HOST ?= 127.0.0.1
+JEKYLL_LOCAL_PORT ?= 4000
+
+build: _site
 	jekyll $@
 
+_site:
+	git clone --branch=gh-pages \
+	    git@github.com:schematype/schematype-org _site
+
 start:
-	@[[ ! -f .server.pid ]] || { echo 'already running'; exit 1; }
-	jekyll serve --watch &> .server.log & \
+	@[ ! -f .server.pid ] || { echo 'already running'; exit 1; }
+	jekyll serve \
+		--host=$(JEKYLL_LOCAL_HOST) \
+		--port=$(JEKYLL_LOCAL_PORT) \
+		--watch \
+			2>&1 > .server.log & \
 	    echo $$! > .server.pid
 
 stop:
-	@[[ -f .server.pid ]] || exit 1
+	@[ -f .server.pid ] || exit 1
 	kill `cat .server.pid`
 	rm .server.pid
 
