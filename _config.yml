@@ -10,6 +10,15 @@ highlighter: pygments
 permalink: /news/:year/:month/:day/:title/
 excerpt_separator: ''
 
+destination: www.schematype.org
+exclude:
+- LICENSE
+- Gemfile
+- Gemfile.lock
+- Makefile
+- schematype.gemspec
+- README.md
+
 timezone: America/Los_Angeles
 
 collections:

@@ -1,12 +1,13 @@
 JEKYLL_LOCAL_HOST ?= 127.0.0.1
 JEKYLL_LOCAL_PORT ?= 4000
+DESTINATION := www.schematype.org
 
-build: _site
+build: $(DESTINATION)
 	jekyll $@
 
-_site:
+$(DESTINATION):
 	git clone --branch=gh-pages \
-	    git@github.com:schematype/schematype-org _site
+	    git@github.com:schematype/schematype-org $(DESTINATION)
 
 start:
 	@[ ! -f .server.pid ] || { echo 'already running'; exit 1; }
@@ -24,7 +25,7 @@ stop:
 
 publish: build
 	( \
-	    cd _site; \
+	    cd $(DESTINATION); \
 	    git add -A .; \
 	    git commit --amend --no-edit; \
 	    git push --force origin gh-pages; \
