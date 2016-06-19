@@ -18,6 +18,10 @@ start:
 			2>&1 > .server.log & \
 	    echo $$! > .server.pid
 
+show:
+	@[ ! -f .server.pid ] || echo "Running pid $$(cat .server.pid)"
+	@ps aux | grep jekyll | grep -v grep || true
+
 stop:
 	@[ -f .server.pid ] || exit 1
 	kill `cat .server.pid`
