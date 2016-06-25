@@ -8,13 +8,13 @@ Here are some examples of what SchemaType docs might look like, with JSON
 Schema (or plain text) equivalents:
 
 * Simple Geo Coordinate object:
-  * [SchemaType](geo-coordinate.schema)
-  * [JSON-Schema](geo-coordinate.json-schema)
+  * [SchemaType](/example/geo-coordinate.schema.txt)
+  * [JSON-Schema](/example/geo-coordinate.json-schema.txt)
 * CloudFoundry `manifest.yml` files:
-  * [SchemaType](manifest.schema)
-  * No JSON-Schema. See [documentation](http://docs.pivotal.io/pivotalcf/1-7/devguide/deploy-apps/manifest.html)
-  * [Sample mainfest.yml file](manifest.yml)
+  * [SchemaType](/example/manifest.schema.txt)
+  * No JSON-Schema. See [documentation](http://docs.pivotal.io/pivotalcf/1-7/devguide/deploy-apps/manifest.html.txt)
+  * [Sample mainfest.yml file](/example/manifest.yml.txt)
 * NPM `package.json` files:
-  * [SchemaType](package-json.schema)
-  * [JSON-Schema](package-json.json-schema.yaml) in YAML
-  * [JSON-Schema](package-json.json-schema) in JSON (The JSON is very verbose)
+  * [SchemaType](/example/package-json.schema.txt)
+  * [JSON-Schema](/example/package-json.json-schema.yaml.txt) in YAML
+  * [JSON-Schema](/example/package-json.json-schema.txt) in JSON (The JSON is very verbose)
