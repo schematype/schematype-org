@@ -8,13 +8,13 @@ Here are some examples of what SchemaType docs might look like, with JSON
 Schema (or plain text) equivalents:
 
 * Simple Geo Coordinate object:
-  * [SchemaType](/example/geo-coordinate.schema.txt)
-  * [JSON-Schema](/example/geo-coordinate.json-schema.txt)
+  * [SchemaType](/example/geo-coordinate.schema.txt){:target="_blank"}
+  * [JSON-Schema](/example/geo-coordinate.json-schema.txt){:target="_blank"}
 * CloudFoundry `manifest.yml` files:
-  * [SchemaType](/example/manifest.schema.txt)
-  * No JSON-Schema. See [documentation](http://docs.pivotal.io/pivotalcf/1-7/devguide/deploy-apps/manifest.html.txt)
-  * [Sample mainfest.yml file](/example/manifest.yml.txt)
+  * [SchemaType](/example/cloudfoundry-manifest.schema.txt){:target="_blank"}
+  * No JSON-Schema. See [documentation](http://docs.pivotal.io/pivotalcf/1-7/devguide/deploy-apps/manifest.html){:target="_blank"}
+  * [Sample mainfest.yml file](/example/cloudfoundry-manifest.yml.txt){:target="_blank"}
 * NPM `package.json` files:
-  * [SchemaType](/example/package-json.schema.txt)
-  * [JSON-Schema](/example/package-json.json-schema.yaml.txt) in YAML
-  * [JSON-Schema](/example/package-json.json-schema.txt) in JSON (The JSON is very verbose)
+  * [SchemaType](/example/package-json.schema.txt){:target="_blank"}
+  * [JSON-Schema](/example/package-json.json-schema.yaml.txt){:target="_blank"} in YAML
+  * [JSON-Schema](/example/package-json.json-schema.txt){:target="_blank"} in JSON (The JSON is very verbose)

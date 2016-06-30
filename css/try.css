@@ -1,0 +1,34 @@
+#try {
+  font-size: small;
+}
+
+#try code {
+  font-size: small;
+  height: 100%;
+  width: 100%;
+  overflow: scroll;
+}
+
+.ui-tabs .ui-tabs-panel {
+    border-width: 0;
+    padding: 0;
+    background: none;
+}
+
+.ui-tabs-panel .ui-tabs-panel {
+    border-width: 0;
+    padding: 10px 5px;
+    height: 400px;
+}
+
+.status_pending {
+  background-color: lightyellow !important;
+}
+
+.status_failure {
+  background-color: lightred !important;
+}
+
+.status_success {
+  background-color: lightgreen !important;
+}

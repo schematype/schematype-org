@@ -28,4 +28,5 @@ collections:
 gems:
 - jekyll-feed
 - jekyll-redirect-from
+- jekyll-coffeescript
 - jemoji

@@ -8,13 +8,13 @@
   <li class="{% if page.url contains '/try/' %}current{% endif %} hide-on-mobiles">
     <a href="/try/">Try It!</a>
   </li>
-  <li class="{% if page.author %}current{% endif %}">
+  <!--li class="{% if page.url contains '/blog/' %}current{% endif %}">
+    <a href="/blog/">Blog</a>
+  </li-->
+  <li class="{% if page.url contains '/news/' %}current{% endif %}">
     <a href="/news/">News</a>
   </li>
   <li class="{% if page.url contains '/help/' %}current{% endif %}">
-    <a href="/help/">Help</a>
-  </li>
-  <li class="hide-on-mobiles">
-    <a href="/wiki.html">Wiki</a>
+    <a href="/help/">More</a>
   </li>
 </ul>
