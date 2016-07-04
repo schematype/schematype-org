@@ -15,6 +15,6 @@ Schema (or plain text) equivalents:
   * No JSON-Schema. See [documentation](http://docs.pivotal.io/pivotalcf/1-7/devguide/deploy-apps/manifest.html){:target="_blank"}
   * [Sample mainfest.yml file](/example/cloudfoundry-manifest.yml.txt){:target="_blank"}
 * NPM `package.json` files:
-  * [SchemaType](/example/package-json.schema.txt){:target="_blank"}
-  * [JSON-Schema](/example/package-json.json-schema.yaml.txt){:target="_blank"} in YAML
-  * [JSON-Schema](/example/package-json.json-schema.txt){:target="_blank"} in JSON (The JSON is very verbose)
+  * [SchemaType](/example/node-package.schema.txt){:target="_blank"}
+  * [JSON-Schema](/example/node-package.json-schema.yaml.txt){:target="_blank"} in YAML
+  * [JSON-Schema](/example/node-package.json-schema.txt){:target="_blank"} in JSON (The JSON is very verbose)

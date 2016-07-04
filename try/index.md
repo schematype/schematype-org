@@ -18,8 +18,8 @@ title: SchemaType Playground
   <div id="tab-main-control">
     <div class="tabset">
       <ul>
-        <li><a href="#tab-control-doc">Documentation</a></li>
         <li><a href="#tab-control-config">Configuration</a></li>
+        <li><a href="#tab-control-doc">Documentation</a></li>
         <li><a href="#tab-control-pref">Preferences</a></li>
       </ul>
       <div id="tab-control-doc">
