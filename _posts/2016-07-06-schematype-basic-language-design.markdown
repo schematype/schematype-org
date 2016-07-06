@@ -127,14 +127,14 @@ SchemaType you need to declare it like this:
 name: +person/name
 age: +age
 dead?: +bool
-//: ...
+...: ...
 ```
 
-There's that `...` again. The `//` key is a regex that matches any string, thus
-any key. Thus this pair allows any key to have any value type.
+There's that `...` again. This means that any key is allowed to map to any
+value type.
 
-For comparison, let's look at the JSON Schema equivalent of our SchemaType
-example:
+That wraps up the explanation of a very basic SchemaType document. For
+comparison, let's look at the JSON Schema equivalent of our example:
 
 ```json
 {
@@ -143,7 +143,7 @@ example:
     "type": "object",
     "properties": {
         "name": {
-            "$ref": "https://github.com/jsonschema/types/person/name"
+            "$ref": "https://example.com/json.schema#person/name"
         },
         "age": {
             "type": "integer",
@@ -162,13 +162,13 @@ example:
 }
 ```
 
-This is a rough equivalent. This example is not so bad because you can see the
-whole thing on one page. In reality, JSON Schema gets unwieldy fast. A primary
-reason is that things like `required` are not made known in the place where the
-key is defined. I've seen many files where that information is 1000s of lines
-apart. The other thing is that it is hard to tell what parts are the JSON
-Schema language words and what parts are the data you are defining. SchemaType
-tries to make all this easy, compact and less painful.
+This is a _rough_ equivalent. This example is not so bad because you can see
+the whole thing on one page. In reality, JSON Schema gets unwieldy fast. A
+primary reason is that things like `required` are not made known in the place
+where the key is defined. I've seen many files where that information is 1000s
+of lines apart. The other thing is that it is hard to tell what parts are the
+JSON Schema language words and what parts are the data you are defining.
+SchemaType tries to make all this easy, compact and less painful.
 
 This post is an introduction to the language basics. It was intended to raise
 more questions than it answers. There is much more to cover, but hopefully
