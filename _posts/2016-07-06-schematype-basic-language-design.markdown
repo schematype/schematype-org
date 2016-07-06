@@ -99,7 +99,7 @@ people.
 
 SchemaType is very big on type **inheritance**. SchemaType only defines 5 types
 in its spec: `String`, `Number`, `Boolean`, `Null`, and `Any`, but none of
-these are referenced directly.
+these are ever referenced directly in schemas.
 
 Next consider the `age` field. This is actually creating a new temporary or
 anonymous type. It inherits from `+int` but then places a range constraint on
@@ -172,4 +172,4 @@ tries to make all this easy, compact and less painful.
 
 This post is an introduction to the language basics. It was intended to raise
 more questions than it answers. There is much more to cover, but hopefully
-that's enough to get you started with SchemaType!
+that's enough to start you thinking about SchemaType!
