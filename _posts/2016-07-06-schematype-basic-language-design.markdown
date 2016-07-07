@@ -7,11 +7,12 @@ author: ingydotnet
 categories: [blog]
 ---
 
-In yesterday's post I talked in broad terms about the scope, purpose and
-intention of SchemaType without actually showing what the language looks like.
-In this post I'll fix that!
+In [yesterday's post](/news/2016/07/05/schematype-can-you-define-that/) I
+talked in broad terms about the scope, purpose and intention of SchemaType
+without actually showing what the language looks like.  In this post I'll fix
+that!
 
-Assume you have this `person.yml` file:
+Assume you have this `person.yaml` file:
 
 ```yaml
 name: Ingy döt Net
@@ -19,12 +20,12 @@ age: 17
 dead: false
 ```
 
-The simplest way to define a `person.st` file might look like this:
+The simplest way to define a `person.schema` file might look like this:
 
 ```yaml
 name: string
-age: int
-dead: bool
+age: integer
+dead: boolean
 ```
 
 This is the starting point of SchemaType. Let's talk about what we have so far.
@@ -37,17 +38,17 @@ real language. Let's move forward with a few additions:
 
 ```yaml
 -name: /person
+-desc: Data about a person
 -spec: schematype.org/v0.0.1
--import:
-  +%: github:schematype/type/%/#v0.1.6
+-from: github:schematype/type/#v0.1.6
 
-name: +person/name
+name: +human/name
 age: +int 1..100
-dead?: +bool
+dead?: +boolean
 ```
 
 This _is_ a valid and complete SchemaType definition. You could publish this
-file for reuse at `http://yourdomain.net/person.st`.
+file for reuse at `http://yourdomain.net/person.schema`.
 
 The first thing you probably noticed are the unusual punctuation characters
 like `-`, `+`, `?` and `%`. SchemaType is a _YAML based **DSL**_. The intention
@@ -55,14 +56,14 @@ of the DSL is to keep the definitions concise. At the expense of learning just
 a few syntax concepts, you can keep simple things simple and massive things
 manageable.
 
-Keys that begin with a `-` belong to the SchemaType language. The first 3 keys
+Keys that begin with a `-` belong to the SchemaType language. The first 4 keys
 will be present in almost every SchemaType definition.
 
 The `-name` field refers to the name of the type being defined in this file. It
 should match the base name of the file that it is stored in. A SchemaType file
 can define multiple types. In that case the name should be set to `/` and the
-file name should be `index.st`. A condensed example of an `index.st` file that
-defines the types `type1` and `type2` would look like:
+file name should be `index.schema`. A condensed example of an `index.schema`
+file that defines the types `type1` and `type2` would look like:
 
 ```
 -name: /
@@ -73,25 +74,27 @@ defines the types `type1` and `type2` would look like:
 Interestingly the `...` is actually SchemaType syntax. It denotes a type
 reference of `+any`, ie any type. More about that in a future post.
 
-The `-spec` field indicates the version of the SchemaType language being used.
+The `-desc` field is a short description of the purpose of this schema. The
+`-spec` field indicates the version of the SchemaType Language Specification
+being used.
 
-The most important (no pun intended) keyword here is `import`. Within a
-SchemaType definition, types are referenced by names preceded with a `+`. In
-reality, each `+type1` reference expands to a full URL like
-`https://github.com/schematype/type/blob/f54b0aa/type1`. The `-import` is
-a mapping of type shorthands to their immutable definition URLs. Again, more
-about that in future posts.
+The most important keyword here is `from`. Within a SchemaType definition,
+types are referenced by names preceded with a `+`. In reality, each `+type1`
+reference expands to a full URL like
+`https://github.com/schematype/type/blob/f54b0aa/type1`. The `-from` is a set
+of type shorthands to their immutable definition URLs. Again, more about that
+in future posts.
 
 Back to the meat of our SchemaType example from above:
 
 ```yaml
-name: +person/name
+name: +human/name
 age: +int 1..100
-dead?: +bool
+dead?: +boolean
 ```
 
 If you see a SchemaType definition that uses `+string` it should be a red flag
-that the schema author is DoingItWrong™. The `+person/name` type (defined by
+that the schema author is DoingItWrong™. The `+human/name` type (defined by
 `schematype/type`) inherits from `+string` but it places much more strict
 constraints on valid values. For instance a URL or a GUID or the full text of
 the US Constitution are all valid strings but will not be valid names of
@@ -106,9 +109,9 @@ anonymous type. It inherits from `+int` but then places a range constraint on
 it. Another way to do this would be:
 
 ```yaml
-name: +person/name
+name: +human/name
 age: +age
-dead?: +bool
+dead?: +boolean
 
 +age: +int 1..100
 ```
@@ -124,9 +127,9 @@ and unspecified keys are allowed. To allow any extra key/value pair in
 SchemaType you need to declare it like this:
 
 ```yaml
-name: +person/name
-age: +age
-dead?: +bool
+name: +human/name
+age: +int 1..100
+dead?: +boolean
 ...: ...
 ```
 
@@ -143,7 +146,7 @@ comparison, let's look at the JSON Schema equivalent of our example:
     "type": "object",
     "properties": {
         "name": {
-            "$ref": "https://example.com/json.schema#person/name"
+            "$ref": "https://example.com/json.schema#human/name"
         },
         "age": {
             "type": "integer",

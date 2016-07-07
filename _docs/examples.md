@@ -12,7 +12,7 @@ Schema (or plain text) equivalents:
   * [JSON-Schema](/example/geo-coordinate.json-schema.txt){:target="_blank"}
 * CloudFoundry `manifest.yml` files:
   * [SchemaType](/example/cloudfoundry-manifest.schema.txt){:target="_blank"}
-  * No JSON-Schema. See [documentation](http://docs.pivotal.io/pivotalcf/1-7/devguide/deploy-apps/manifest.html){:target="_blank"}
+  * No JSON-Schema. See [documentation](http://docs.pivotal.io/pivotalcf/1-7/devguide/deploy-apps/manifest.html.txt){:target="_blank"}
   * [Sample mainfest.yml file](/example/cloudfoundry-manifest.yml.txt){:target="_blank"}
 * NPM `package.json` files:
   * [SchemaType](/example/node-package.schema.txt){:target="_blank"}

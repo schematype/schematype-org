@@ -9,6 +9,11 @@ $(DESTINATION):
 	git clone --branch=gh-pages \
 	    git@github.com:schematype/schematype-org $(DESTINATION)
 
+$(DESTINATION)/.git:
+	@echo 'You are in a bad state'
+	@echo "Delete $(DESTINATION); run 'make stop' and try again"
+	@exit 1
+
 restart: stop start
 
 start:

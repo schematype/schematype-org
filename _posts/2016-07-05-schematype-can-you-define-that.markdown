@@ -91,8 +91,8 @@ in it. I believe SchemaType will offer at least these advantages:
 
 To get things rolling with SchemaType, early implementations will be able to
 not only import JSON Schema to SchemaType but also to export SchemaType
-definitions back to JSON SchemaType. Therefore if you are already invested in
-JSON Schema, it will be easy to either make the switch, or simply use the more
+definitions back to JSON Schema. Therefore if you are already invested in JSON
+Schema, it will be easy to either make the switch, or simply use the more
 expressive and elegant SchemaType and then save it back to JSON Schema.
 
 #### Join The Schema Revolution
