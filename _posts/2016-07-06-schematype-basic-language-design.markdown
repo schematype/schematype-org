@@ -2,7 +2,7 @@
 type: news
 layout: news_item
 title: SchemaType Basic Language Design
-date: 2016-07-05 09:00:00 -0700
+date: 2016-07-06 09:00:00 -0700
 author: ingydotnet
 categories: [blog]
 ---
