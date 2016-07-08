@@ -24,11 +24,11 @@ class TrySchemaType
 
   get_example: (input, event)->
     @get_example_file \
-      "/example/#{input.value}.schema",
+      "/example/#{input.value}.stp.txt",
       @schema_tab,
       @schematype_div
     @get_example_file \
-      "/example/#{input.value}.yaml",
+      "/example/#{input.value}.yaml.txt",
         @data_tab,
         @yaml_div,
         @yaml_to_json

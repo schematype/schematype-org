@@ -20,7 +20,8 @@ age: 17
 dead: false
 ```
 
-The simplest way to define a `person.schema` file might look like this:
+The simplest way to define a `person.stp` (`.stp` is the SchemaType file
+extension) file might look like this:
 
 ```yaml
 name: string
@@ -48,7 +49,7 @@ dead?: +boolean
 ```
 
 This _is_ a valid and complete SchemaType definition. You could publish this
-file for reuse at `http://yourdomain.net/person.schema`.
+file for reuse at `http://yourdomain.net/person.stp`.
 
 The first thing you probably noticed are the unusual punctuation characters
 like `-`, `+`, `?` and `%`. SchemaType is a _YAML based **DSL**_. The intention
@@ -62,8 +63,8 @@ will be present in almost every SchemaType definition.
 The `-name` field refers to the name of the type being defined in this file. It
 should match the base name of the file that it is stored in. A SchemaType file
 can define multiple types. In that case the name should be set to `/` and the
-file name should be `index.schema`. A condensed example of an `index.schema`
-file that defines the types `type1` and `type2` would look like:
+file name should be `index.stp`. A condensed example of an `index.stp` file
+that defines the types `type1` and `type2` would look like:
 
 ```
 -name: /

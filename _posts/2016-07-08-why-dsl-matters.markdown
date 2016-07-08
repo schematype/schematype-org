@@ -107,8 +107,8 @@ front which style to use. The `schematype` CLI can reformat your schema files
 for you:
 
 ```
-$ schematype format --compact some.schema
-$ schematype format --explicit some.schema
+$ schematype format --compact some.stp
+$ schematype format --explicit some.stp
 ```
 
 In fact, SchemaType schemas get compiled before they are used. All the external
@@ -118,11 +118,12 @@ at these files unless you are debugging something. When you publish a
 SchemaType schema, you are encouraged to publish the compiled form:
 
 ```
-$ schematype compile --sign some.schema -o some.schema.v0-0-1
+$ schematype compile --sign some.stp -o some.stx
 ```
 
 This will create a digitally signed compiled schema file, that other schema
-types will use when they reference your hosted schema.
+types will use when they reference your hosted schema. `.stx` is the SchemaType
+extension for a compiled schema. It is actually stored as compact JSON.
 
 #### Stay Tuned
 
