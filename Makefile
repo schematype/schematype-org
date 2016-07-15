@@ -1,8 +1,11 @@
+export PATH := $(PATH)
+export PWD := $(PWD)
+
 JEKYLL_LOCAL_HOST ?= 127.0.0.1
 JEKYLL_LOCAL_PORT ?= 4000
 DESTINATION := www.schematype.org
 
-build: $(DESTINATION) $(DESTINATION)/.git
+build: $(DESTINATION) $(DESTINATION)/.git try
 	jekyll $@
 
 $(DESTINATION):
@@ -33,6 +36,11 @@ stop:
 	@[ -f .server.pid ] || exit 1
 	kill `cat .server.pid`
 	rm .server.pid
+
+try:
+	make -e -C ./editor dist-dir
+	rm -fr $@
+	mv ./editor/schematype-editor $@
 
 publish: build
 	( \

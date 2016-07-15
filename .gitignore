@@ -1,8 +1,10 @@
-www.schematype.org/
+/www.schematype.org/
 *.swp
 pkg/
 test/
 .sass-cache/
 .server.log
 .server.pid
-note/
+/try/
+/note/
+/editor/
