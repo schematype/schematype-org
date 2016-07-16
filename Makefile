@@ -17,6 +17,9 @@ $(DESTINATION)/.git:
 	@echo "Delete $(DESTINATION); run 'make stop' and try again"
 	@exit 1
 
+open:
+	open http://127.0.0.1:4000/
+
 restart: stop start
 
 start:
@@ -28,17 +31,17 @@ start:
 			2>&1 > .server.log & \
 	    echo $$! > .server.pid
 
+stop:
+	@[ -f .server.pid ] || exit 1
+	kill -9 `cat .server.pid`
+	rm .server.pid
+
 show:
 	@[ ! -f .server.pid ] || echo "Running pid $$(cat .server.pid)"
 	@ps aux | grep jekyll | grep -v grep || true
 
-stop:
-	@[ -f .server.pid ] || exit 1
-	kill `cat .server.pid`
-	rm .server.pid
-
 try:
-	make -e -C ./editor dist-dir
+	make -C ./editor dist-dir
 	rm -fr $@
 	mv ./editor/schematype-editor $@
 
@@ -49,6 +52,3 @@ publish: build
 	    git commit --amend --no-edit; \
 	    git push --force origin gh-pages; \
 	)
-
-open:
-	open http://127.0.0.1:4000/
