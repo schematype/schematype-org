@@ -18,6 +18,8 @@ exclude:
 - Makefile
 - schematype.gemspec
 - README.md
+- editor
+- try
 
 timezone: America/Los_Angeles
 
