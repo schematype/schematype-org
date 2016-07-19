@@ -10,7 +10,22 @@ This site aims to be a comprehensive guide to SchemaType.
 ## What is SchemaType?
 
 SchemaType is a Data Definition Language for structured data formats like YAML,
-JSON, CSV, etc.
+JSON, CSV, etc. Traditionally, DTDs are used for data validation. SchemaType
+has this goal, certainly, but it goes much further than that. When data is well
+defined, much of the software that deals with the data can be generated rather
+than written by hand. Put another way, the more well-defined data you have in
+your system, the less code you have to write.
+
+Interestingly, the data definitions (schemas) can be partially generated from
+valid input. THe more valid input that you feed such a generator, the more
+accurately it can define the schema. This makes the adoption of SchemaType
+easier and more appealing. Use your data to create the schema; review and tune
+it by hand; then use the schema to generate much of your software.
+
+This guide describes the SchemaType language in full. It has reference material
+and also tutorials for getting you up to speed. It also describes the reference
+implementation: a CLI tool called `stp`, which also runs the online SchemaType
+Editor.
 
 ## Helpful Hints
 
